@@ -16,3 +16,15 @@ builder.prismaObject("Task", {
         taskList: t.relation("taskList"),
     }),
 });
+
+builder.prismaObject("TaskList", {
+    description: "A named collection of tasks.",
+    fields: (t) => ({
+        id: t.exposeID("id"),
+        name: t.exposeString("name"),
+        createdAt: t.expose("createdAt", {
+            type: "DateTime",
+        }),
+        tasks: t.relation("tasks"),
+    }),
+});
