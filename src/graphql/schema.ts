@@ -55,3 +55,18 @@ builder.queryType("tasks", (t) => t.prismaField({
             },
         }),
 }));
+
+builder.queryType("task", (t) => t.prismaField({
+    type: ["Task"],
+    description: "Return a single task by id",
+    args: {
+        id: t.arg.id({required: true}),
+    },
+    resolve: async (query, root, args, ctx, info)=>
+        ctx.prisma.task.findMany({
+            ...query,
+            where: {
+                id: args.id,
+            }
+        }),
+}));
