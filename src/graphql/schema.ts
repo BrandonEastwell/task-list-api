@@ -29,6 +29,18 @@ builder.prismaObject("TaskList", {
     }),
 });
 
+builder.queryType("taskLists", (t) => t.prismaField({
+    type: ["TaskList"],
+    description: "Return all task lists",
+    resolve: async (query, root, args, ctx, info)=>
+        ctx.prisma.taskList.findMany({
+            ...query,
+            orderBy: {
+                createdAt: "asc",
+            },
+        }),
+}));
+
 builder.queryType("tasks", (t) => t.prismaField({
     type: ["Task"],
     description: "Return tasks for a given list",
