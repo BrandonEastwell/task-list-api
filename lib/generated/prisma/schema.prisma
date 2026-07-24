@@ -1,0 +1,32 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../lib/generated/prisma"
+}
+
+generator pothos {
+  provider     = "prisma-pothos-types"
+  clientOutput = "./prisma"
+  output       = "../lib/generated/pothos-prisma-types.ts"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model TaskList {
+  id        String   @id @default(uuid())
+  name      String
+  createdAt DateTime @default(now())
+  tasks     Task[]
+}
+
+model Task {
+  id         String   @id @default(uuid())
+  title      String
+  completed  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  taskList   TaskList @relation(fields: [taskListId], references: [id])
+  taskListId String
+}
