@@ -29,7 +29,7 @@ builder.prismaObject("TaskList", {
     }),
 });
 
-builder.queryType("taskLists", (t) => t.prismaField({
+builder.queryField("taskLists", (t) => t.prismaField({
     type: ["TaskList"],
     description: "Return all task lists",
     resolve: async (query, root, args, ctx, info)=>
@@ -41,7 +41,7 @@ builder.queryType("taskLists", (t) => t.prismaField({
         }),
 }));
 
-builder.queryType("tasks", (t) => t.prismaField({
+builder.queryField("tasks", (t) => t.prismaField({
     type: ["Task"],
     description: "Return tasks for a given list",
     args: {
@@ -56,7 +56,7 @@ builder.queryType("tasks", (t) => t.prismaField({
         }),
 }));
 
-builder.queryType("task", (t) => t.prismaField({
+builder.queryField("task", (t) => t.prismaField({
     type: ["Task"],
     description: "Return a single task by id",
     args: {
