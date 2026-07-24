@@ -113,3 +113,19 @@ builder.mutationField("addTask", (t) => t.prismaField({
             }
         })
 }))
+
+builder.mutationField("deleteTask", (t) => t.prismaField({
+    type: "Task",
+    args: {
+        id: t.arg.id({
+            required: true
+        }),
+    },
+    resolve: (query, parent, args, ctx, info) =>
+        ctx.prisma.task.delete({
+            ...query,
+            where: {
+                id: args.id
+            }
+        })
+}))
