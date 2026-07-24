@@ -78,6 +78,8 @@ npm test
 
 I used offset pagination for `tasks`. It is easy to read and easy to test, which fits this assignment well.
 
+I also returned a `TaskPage` object instead of a plain task array so the client gets the page items and the pagination details together in one response. That keeps the API simple to use and leaves room for extra page metadata later without changing the shape again.
+
 ### Error handling
 
 If a task or task list is missing, I throw a typed GraphQL error with a machine-readable `code` and a plain message. That keeps the client response consistent and avoids raw Prisma errors.
@@ -90,7 +92,11 @@ I wrote tests for:
 - unknown task ids
 - task pagination
 
-I picked those because they cover the main resolver behavior that is easy to get wrong.
+I picked those because they cover the main resolver behavior that is easy to get wrong:
+
+- partial updates should only change the fields that were sent
+- missing task ids should return a typed `NOT_FOUND` error
+- pagination should return the right slice of tasks and page details
 
 ## Notes
 
