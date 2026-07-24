@@ -2,7 +2,7 @@
 
 Task list GraphQL API built with Node.js, TypeScript, Yoga, Pothos, Prisma, Zod, and Vitest.
 
-I had to learn GraphQL while working on this take-home, so I kept the schema and resolver layout simple and split by domain.
+I had to learn GraphQL while working on this take-home, so I kept the schema split by domain and the setup steps simple.
 
 ## What It Does
 
@@ -28,16 +28,28 @@ All query and mutation inputs are checked with Zod.
 npm install
 ```
 
-2. Start Postgres with Docker:
+2. Create your local env file:
+
+```bash
+cp .env.example .env
+```
+
+3. Start Postgres with Docker:
 
 ```bash
 docker compose up -d postgres
 ```
 
-3. Create the Prisma client:
+4. Create the Prisma client:
 
 ```bash
 npm run prisma:generate
+```
+
+5. Push the schema to the database:
+
+```bash
+npx prisma db push
 ```
 
 ## Run
@@ -48,7 +60,7 @@ Start the server:
 npm run dev
 ```
 
-The GraphQL endpoint is:
+GraphQL runs at:
 
 ```bash
 http://localhost:4000/graphql
@@ -64,11 +76,11 @@ npm test
 
 ### Pagination
 
-I used offset pagination for `tasks`. It is easy to read, easy to test, and enough for this assignment.
+I used offset pagination for `tasks`. It is easy to read and easy to test, which fits this assignment well.
 
 ### Error handling
 
-Missing records throw typed GraphQL errors with a machine-readable `code` and a clear message. I used custom error helpers for that.
+If a task or task list is missing, I throw a typed GraphQL error with a machine-readable `code` and a plain message. That keeps the client response consistent and avoids raw Prisma errors.
 
 ### Testing
 
@@ -78,10 +90,10 @@ I wrote tests for:
 - unknown task ids
 - task pagination
 
-I chose these because they cover the part of the API most likely to break: updates, not-found handling, and list slicing.
+I picked those because they cover the main resolver behavior that is easy to get wrong.
 
 ## Notes
 
-- The database is PostgreSQL through Docker Compose.
-- The test setup pushes the Prisma schema before the suite runs so the tests can start from a clean database.
-- With more time, I would add more resolver tests, input validation tests, and probably a DataLoader to avoid N+1 queries when task lists load tasks.
+- The database runs in PostgreSQL through Docker Compose.
+- The test setup runs `prisma db push` before the suite starts, so tests can begin with a clean schema.
+- With more time, I would add more resolver tests, more input validation tests, and a DataLoader for task list lookups to avoid N+1 queries.

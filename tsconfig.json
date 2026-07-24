@@ -3,6 +3,10 @@
     "target": "ES2022",
     "module": "CommonJS",
     "moduleResolution": "Node",
+    "baseUrl": ".",
+    "paths": {
+      "@pothos/plugin-prisma/generated": ["lib/generated/pothos-prisma-types.ts"]
+    },
     "strict": true,
     "noImplicitAny": true,
     "exactOptionalPropertyTypes": true,
