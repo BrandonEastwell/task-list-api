@@ -3,7 +3,7 @@ import {builder} from "./builder";
 
 import "./queries";
 import "./mutations";
-import {TaskPageType} from "./types";
+import {TaskPageShape} from "./types";
 
 export const TaskType = builder.prismaObject("Task", {
     description: "A task belonging to a task list.",
@@ -33,8 +33,8 @@ export const TaskListType = builder.prismaObject("TaskList", {
     }),
 });
 
-const TaskPage = builder.objectRef<TaskPageType>("TaskPage");
-TaskPage.implement({
+export const TaskPageType = builder.objectRef<TaskPageShape>("TaskPage");
+TaskPageType.implement({
     description: "A page of tasks.",
     fields: (t) => ({
         items: t.field({

@@ -1,5 +1,5 @@
 
-export type TaskPageType = {
+export type TaskPageShape = {
     items: Task[];
     totalCount: number;
     hasNextPage: boolean;
