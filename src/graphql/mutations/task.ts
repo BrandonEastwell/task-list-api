@@ -2,9 +2,10 @@ import {builder} from "../builder";
 import type {Prisma} from "@prisma/client";
 import {taskTitleSchema, uuidSchema} from "../validation/schema";
 import {notFound} from "../errors";
+import {TaskType} from "../schema";
 
 builder.mutationField("addTask", (t) => t.prismaField({
-    type: "Task",
+    type: TaskType,
     args: {
         title: t.arg.string({
             required: true,
@@ -30,7 +31,7 @@ builder.mutationField("addTask", (t) => t.prismaField({
 }))
 
 builder.mutationField("deleteTask", (t) => t.prismaField({
-    type: "Task",
+    type: TaskType,
     args: {
         id: t.arg.id({
             required: true,
@@ -56,7 +57,7 @@ builder.mutationField("deleteTask", (t) => t.prismaField({
 }))
 
 builder.mutationField("updateTask", (t) => t.prismaField({
-    type: "Task",
+    type: TaskType,
     args: {
         id: t.arg.id({
             required: true,
@@ -100,5 +101,4 @@ builder.mutationField("updateTask", (t) => t.prismaField({
             data,
         })
     }
-
 }))

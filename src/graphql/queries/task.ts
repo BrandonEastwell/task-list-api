@@ -1,9 +1,10 @@
 import {builder} from "../builder";
 import {uuidSchema} from "../validation/schema";
 import {notFound} from "../errors";
+import {TaskType} from "../schema";
 
 builder.queryField("tasks", (t) => t.prismaField({
-    type: ["Task"],
+    type: [TaskType],
     description: "Return tasks for a given list",
     args: {
         listId: t.arg.string({
@@ -30,7 +31,7 @@ builder.queryField("tasks", (t) => t.prismaField({
 }));
 
 builder.queryField("task", (t) => t.prismaField({
-    type: ["Task"],
+    type: [TaskType],
     description: "Return a single task by id",
     args: {
         id: t.arg.string({

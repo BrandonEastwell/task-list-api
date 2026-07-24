@@ -1,7 +1,8 @@
 import {builder} from "../builder";
+import {TaskListType} from "../schema";
 
 builder.queryField("taskLists", (t) => t.prismaField({
-    type: ["TaskList"],
+    type: [TaskListType],
     description: "Return all task lists",
     resolve: async (query, root, args, ctx, info)=>
         ctx.prisma.taskList.findMany({

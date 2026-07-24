@@ -1,7 +1,8 @@
 import {builder} from "../builder";
+import {TaskListType} from "../schema";
 
 builder.mutationField("addTaskList", (t) => t.prismaField({
-    type: "TaskList",
+    type: TaskListType,
     args: {
         name: t.arg.string({
             required: true,
