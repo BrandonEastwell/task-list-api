@@ -4,12 +4,13 @@ import PrismaPlugin from "@pothos/plugin-prisma";
 import PrismaTypes, {getDatamodel} from "@pothos/plugin-prisma/generated";
 import {prisma} from "../db/prisma";
 import {GraphQLContext} from "../context";
+import ZodPlugin from "@pothos/plugin-zod";
 
 export const builder = new SchemaBuilder<{
     Context: GraphQLContext;
     PrismaTypes: PrismaTypes; // This gives the builder all the type information about your prisma schema
 }>({
-    plugins: [PrismaPlugin],
+    plugins: [PrismaPlugin, ZodPlugin],
     prisma: {
         client: prisma,
         dmmf: getDatamodel(),
@@ -17,4 +18,10 @@ export const builder = new SchemaBuilder<{
         // warn when not using a query parameter correctly
         onUnusedQuery: process.env.NODE_ENV === 'production' ? null : 'warn',
     },
+    zod: {
+        validationError: (zodError, args, context, info) => {
+            // the default behavior is to just throw the zod error directly
+            return zodError;
+        },
+    }
 });
