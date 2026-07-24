@@ -6,6 +6,7 @@ import PrismaTypes, {getDatamodel} from "@pothos/plugin-prisma/generated";
 import {prisma} from "../db/prisma";
 import {GraphQLContext} from "../context";
 import ZodPlugin from "@pothos/plugin-zod";
+import {badUserInput} from "./errors";
 
 export const builder = new SchemaBuilder<{
     Context: GraphQLContext;
@@ -27,8 +28,8 @@ export const builder = new SchemaBuilder<{
     },
     zod: {
         validationError: (zodError, args, context, info) => {
-            // the default behavior is to just throw the zod error directly
-            return zodError;
+            const errors = zodError.issues.map((issue) => `${issue.path.join(".")}: ${issue.message}`)
+            throw badUserInput(errors.join("; "));
         },
     }
 });
