@@ -1,5 +1,6 @@
 import SchemaBuilder from "@pothos/core";
 import PrismaPlugin from "@pothos/plugin-prisma";
+import {GraphQLScalarType, Kind} from "graphql";
 
 import PrismaTypes, {getDatamodel} from "@pothos/plugin-prisma/generated";
 import {prisma} from "../db/prisma";
@@ -9,6 +10,12 @@ import ZodPlugin from "@pothos/plugin-zod";
 export const builder = new SchemaBuilder<{
     Context: GraphQLContext;
     PrismaTypes: PrismaTypes; // This gives the builder all the type information about your prisma schema
+    Scalars: {
+        DateTime: {
+            Input: Date | string;
+            Output: Date;
+        };
+    };
 }>({
     plugins: [PrismaPlugin, ZodPlugin],
     prisma: {
@@ -25,3 +32,20 @@ export const builder = new SchemaBuilder<{
         },
     }
 });
+
+builder.addScalarType("DateTime", new GraphQLScalarType({
+    name: "DateTime",
+    serialize(value: unknown): string {
+        return value instanceof Date ? value.toISOString() : new Date(value as string).toISOString();
+    },
+    parseValue(value: unknown): Date {
+        return value instanceof Date ? value : new Date(value as string);
+    },
+    parseLiteral(ast): Date | null {
+        if (ast.kind !== Kind.STRING) {
+            return null;
+        }
+
+        return new Date(ast.value);
+    },
+}));
