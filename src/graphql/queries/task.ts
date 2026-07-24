@@ -1,6 +1,6 @@
 import {builder} from "../builder";
-import {z} from "zod";
 import {uuidSchema} from "../validation/schema";
+import {notFound} from "../errors";
 
 builder.queryField("tasks", (t) => t.prismaField({
     type: ["Task"],
@@ -13,13 +13,20 @@ builder.queryField("tasks", (t) => t.prismaField({
             },
         }),
     },
-    resolve: async (query, root, args, ctx, info)=>
-        ctx.prisma.task.findMany({
+    resolve: async (query, root, args, ctx, info) => {
+        const exists = ctx.prisma.taskList.findUnique({
+            where: { id: args.listId }
+        })
+
+        if (!exists) throw notFound("TaskList")
+
+        return ctx.prisma.task.findMany({
             ...query,
             where: {
                 taskListId: args.listId,
             },
-        }),
+        })
+    }
 }));
 
 builder.queryField("task", (t) => t.prismaField({
@@ -33,11 +40,18 @@ builder.queryField("task", (t) => t.prismaField({
             },
         }),
     },
-    resolve: async (query, root, args, ctx, info)=>
-        ctx.prisma.task.findMany({
+    resolve: async (query, root, args, ctx, info) => {
+        const exists = ctx.prisma.task.findUnique({
+            where: { id: args.id }
+        })
+
+        if (!exists) throw notFound("Task")
+
+        return ctx.prisma.task.findMany({
             ...query,
             where: {
                 id: args.id,
             }
-        }),
+        })
+    }
 }));

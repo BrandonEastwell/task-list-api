@@ -1,6 +1,7 @@
 import {builder} from "../builder";
 import type {Prisma} from "@prisma/client";
 import {taskTitleSchema, uuidSchema} from "../validation/schema";
+import {notFound} from "../errors";
 
 builder.mutationField("addTask", (t) => t.prismaField({
     type: "Task",
@@ -38,13 +39,20 @@ builder.mutationField("deleteTask", (t) => t.prismaField({
             },
         }),
     },
-    resolve: (query, parent, args, ctx, info) =>
-        ctx.prisma.task.delete({
+    resolve: (query, parent, args, ctx, info) => {
+        const exists = ctx.prisma.task.findUnique({
+            where: { id: args.id }
+        })
+
+        if (!exists) throw notFound("Task")
+
+        return ctx.prisma.task.delete({
             ...query,
             where: {
                 id: args.id
             }
         })
+    }
 }))
 
 builder.mutationField("updateTask", (t) => t.prismaField({
@@ -79,6 +87,12 @@ builder.mutationField("updateTask", (t) => t.prismaField({
         if (args.completed != null) {
             data.completed = args.completed;
         }
+
+        const exists = ctx.prisma.task.findUnique({
+            where: { id: args.id }
+        })
+
+        if (!exists) throw notFound("Task")
 
         return ctx.prisma.task.update({
             ...query,
