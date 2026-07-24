@@ -1,5 +1,5 @@
 // GraphQL schema composition will live here.
-import { builder } from "../builder.js";
+import {builder} from "./builder";
 
 builder.prismaObject("Task", {
     description: "A task belonging to a task list.",
@@ -28,3 +28,18 @@ builder.prismaObject("TaskList", {
         tasks: t.relation("tasks"),
     }),
 });
+
+builder.queryType("tasks", (t) => t.prismaField({
+    type: ["Task"],
+    description: "Return tasks for a given list",
+    args: {
+        listId: t.arg.id({required: true}),
+    },
+    resolve: async (query, root, args, ctx, info)=>
+        ctx.prisma.task.findMany({
+            ...query,
+            where: {
+                taskListId: args.listId,
+            },
+        }),
+}));

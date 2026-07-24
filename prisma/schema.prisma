@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  output   = "../lib/generated/prisma"
 }
 
 generator pothos {
@@ -16,7 +17,7 @@ datasource db {
 model TaskList {
   id        String   @id @default(uuid())
   name      String
-  createdAt DateTime
+  createdAt DateTime @default(now())
   tasks     Task[]
 }
 

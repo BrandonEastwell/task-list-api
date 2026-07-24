@@ -5,7 +5,7 @@ import PrismaTypes, {getDatamodel} from "@pothos/plugin-prisma/generated";
 import {prisma} from "../db/prisma";
 import {GraphQLContext} from "../context";
 
-const builder = new SchemaBuilder<{
+export const builder = new SchemaBuilder<{
     Context: GraphQLContext;
     PrismaTypes: PrismaTypes; // This gives the builder all the type information about your prisma schema
 }>({
