@@ -76,7 +76,12 @@ builder.mutationField("addTaskList", (t) => t.prismaField({
     args: {
         name: t.arg.string({
             required: true,
-            description: "The task list name"
+            description: "The task list name",
+            validate: {
+                type: "string",
+                minLength: 1,
+                maxLength: 100
+            }
         })
     },
     resolve: (query, parent, args, ctx, info) =>
