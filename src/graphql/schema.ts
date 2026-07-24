@@ -70,3 +70,21 @@ builder.queryField("task", (t) => t.prismaField({
             }
         }),
 }));
+
+builder.mutationField("addTaskList", (t) => t.prismaField({
+    type: "TaskList",
+    args: {
+        name: t.arg.string({
+            required: true,
+            description: "The task list name"
+        })
+    },
+    resolve: (query, parent, args, ctx, info) =>
+        ctx.prisma.taskList.create({
+            ...query,
+            data: {
+                name: args.name,
+                createdAt: new Date(),
+            }
+        })
+}));
