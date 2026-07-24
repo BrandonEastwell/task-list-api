@@ -1,6 +1,6 @@
 import {builder} from "../builder";
 import type {Prisma} from "@prisma/client";
-import {z} from "zod";
+import {taskTitleSchema, uuidSchema} from "../validation/schema";
 
 builder.mutationField("addTask", (t) => t.prismaField({
     type: "Task",
@@ -8,15 +8,13 @@ builder.mutationField("addTask", (t) => t.prismaField({
         title: t.arg.string({
             required: true,
             validate: {
-               type: "string",
-               minLength: 1,
-               maxLength: 100
+               schema: taskTitleSchema
             }
         }),
         taskListId: t.arg.string({
             required: true,
             validate: {
-                schema: z.string().uuid(),
+                schema: uuidSchema,
             },
         })
     },
@@ -36,7 +34,7 @@ builder.mutationField("deleteTask", (t) => t.prismaField({
         id: t.arg.id({
             required: true,
             validate: {
-                schema: z.string().uuid(),
+                schema: uuidSchema,
             },
         }),
     },
@@ -55,15 +53,13 @@ builder.mutationField("updateTask", (t) => t.prismaField({
         id: t.arg.id({
             required: true,
             validate: {
-                schema: z.string().uuid("id must be a valid UUID"),
+                schema: uuidSchema,
             },
         }),
         title: t.arg.string({
             required: false,
             validate: {
-                type: "string",
-                minLength: 1,
-                maxLength: 100
+                schema: taskTitleSchema
             }
         }),
         completed: t.arg.boolean({

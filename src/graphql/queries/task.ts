@@ -1,5 +1,6 @@
 import {builder} from "../builder";
 import {z} from "zod";
+import {uuidSchema} from "../validation/schema";
 
 builder.queryField("tasks", (t) => t.prismaField({
     type: ["Task"],
@@ -8,7 +9,7 @@ builder.queryField("tasks", (t) => t.prismaField({
         listId: t.arg.string({
             required: true,
             validate: {
-                schema: z.string().uuid(),
+                schema: uuidSchema,
             },
         }),
     },
@@ -28,7 +29,7 @@ builder.queryField("task", (t) => t.prismaField({
         id: t.arg.string({
             required: true,
             validate: {
-                schema: z.string().uuid(),
+                schema: uuidSchema,
             },
         }),
     },
