@@ -1,10 +1,12 @@
 services:
-  db:
-    image: postgres:16-alpine
+  postgres:
+    image: postgres:17
+    container_name: task-list-postgres
+    restart: unless-stopped
     environment:
-      POSTGRES_USER: tasklist
-      POSTGRES_PASSWORD: tasklist
-      POSTGRES_DB: tasklist
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: task_list
     ports:
       - "5432:5432"
     volumes:

@@ -1,9 +1,19 @@
 // GraphQL schema composition will live here.
 import {builder} from "./builder";
 
-import "./queries";
-import "./mutations";
+import "./queries/taskList";
+import "./queries/task";
+import "./mutations/taskList";
+import "./mutations/task";
 import {TaskPageShape} from "./types";
+
+builder.queryType({
+    fields: () => ({}),
+});
+
+builder.mutationType({
+    fields: () => ({}),
+});
 
 export const TaskType = builder.prismaObject("Task", {
     description: "A task belonging to a task list.",

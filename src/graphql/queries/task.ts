@@ -26,6 +26,9 @@ builder.queryField("tasks", (t) =>
             })
         },
         resolve: async (root, args, ctx): Promise<TaskPageShape> => {
+            const limit = args.limit ?? 20;
+            const offset = args.offset ?? 0;
+
             const exists = await ctx.prisma.taskList.findUnique({
                 where: {
                     id: args.listId
@@ -41,17 +44,16 @@ builder.queryField("tasks", (t) =>
 
             const where = {
                 taskListId: args.listId,
-                ...(args.completed !== null &&
-                    args.completed !== undefined && {
-                        completed: args.completed,
-                    }),
+                ...(args.completed !== null && args.completed !== undefined && {
+                    completed: args.completed
+                }),
             };
 
             const [items, total] = await ctx.prisma.$transaction([
                 ctx.prisma.task.findMany({
                     where,
-                    skip: args.offset ?? 0,
-                    take: args.limit ?? 20,
+                    skip: offset,
+                    take: limit,
                     orderBy: [{ createdAt: "asc" }, { id: "asc" }],
                 }),
                 ctx.prisma.task.count({
@@ -62,16 +64,16 @@ builder.queryField("tasks", (t) =>
             return {
                 items,
                 totalCount: total,
-                limit: items.length,
-                offset: 0,
-                hasNextPage: false,
+                limit,
+                offset,
+                hasNextPage: offset + items.length < total,
             };
         },
     }),
 );
 
 builder.queryField("task", (t) => t.prismaField({
-    type: [TaskType],
+    type: TaskType,
     description: "Return a single task by id",
     args: {
         id: t.arg.string({
@@ -82,13 +84,13 @@ builder.queryField("task", (t) => t.prismaField({
         }),
     },
     resolve: async (query, root, args, ctx, info) => {
-        const exists = ctx.prisma.task.findUnique({
+        const exists = await ctx.prisma.task.findUnique({
             where: { id: args.id }
-        })
+        });
 
-        if (!exists) throw notFound("Task")
+        if (!exists) throw notFound("Task");
 
-        return ctx.prisma.task.findMany({
+        return ctx.prisma.task.findUnique({
             ...query,
             where: {
                 id: args.id,

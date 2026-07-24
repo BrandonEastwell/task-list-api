@@ -40,12 +40,12 @@ builder.mutationField("deleteTask", (t) => t.prismaField({
             },
         }),
     },
-    resolve: (query, parent, args, ctx, info) => {
-        const exists = ctx.prisma.task.findUnique({
+    resolve: async (query, parent, args, ctx, info) => {
+        const exists = await ctx.prisma.task.findUnique({
             where: { id: args.id }
-        })
+        });
 
-        if (!exists) throw notFound("Task")
+        if (!exists) throw notFound("Task");
 
         return ctx.prisma.task.delete({
             ...query,
@@ -78,7 +78,7 @@ builder.mutationField("updateTask", (t) => t.prismaField({
     validate: [(args) => args.title != null || args.completed != null, {
         message: "At least one of title or completed must be provided"
     }],
-    resolve: (query, parent, args, ctx, info) => {
+    resolve: async (query, parent, args, ctx, info) => {
         const data: Prisma.TaskUpdateInput = {};
 
         if (args.title != null) {
@@ -89,11 +89,11 @@ builder.mutationField("updateTask", (t) => t.prismaField({
             data.completed = args.completed;
         }
 
-        const exists = ctx.prisma.task.findUnique({
+        const exists = await ctx.prisma.task.findUnique({
             where: { id: args.id }
-        })
+        });
 
-        if (!exists) throw notFound("Task")
+        if (!exists) throw notFound("Task");
 
         return ctx.prisma.task.update({
             ...query,
