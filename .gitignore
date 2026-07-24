@@ -6,3 +6,4 @@ coverage
 *.log
 .idea/
 vitest.config.js
+lib/generated
